@@ -177,6 +177,7 @@ open class OAuth2Swift: OAuthSwift {
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
+        parameters["realmId"] = "realmId"
         parameters["grant_type"] = "authorization_code"
 
         // PKCE - extra parameter
