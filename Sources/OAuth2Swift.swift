@@ -121,6 +121,7 @@ open class OAuth2Swift: OAuthSwift {
                     callbackURLEncoded = nil
                 }
                 if let handle = this.postOAuthAccessTokenWithRequestToken(
+                    responseParameters: responseParameters,
                     byCode: code.safeStringByRemovingPercentEncoding,
                     callbackURL: callbackURLEncoded, headers: headers, completionHandler: completion) {
                     this.putHandle(handle, withKey: UUID().uuidString)
@@ -172,12 +173,12 @@ open class OAuth2Swift: OAuthSwift {
         return nil
     }
 
-    open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        var parameters = OAuthSwift.Parameters()
+    open func postOAuthAccessTokenWithRequestToken(responseParameters: OAuthSwift.Parameters, byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+        var parameters = responseParameters
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
-        parameters["realmId"] = "realmId"
+        parameters["realmIdTest"] = "realmId"
         parameters["grant_type"] = "authorization_code"
 
         // PKCE - extra parameter
@@ -214,10 +215,12 @@ open class OAuth2Swift: OAuthSwift {
             case .success(let response):
                 let responseJSON: Any? = try? response.jsonObject(options: .mutableContainers)
 
-                let responseParameters: OAuthSwift.Parameters
+                var responseParameters = parameters
 
                 if let jsonDico = responseJSON as? [String: Any] {
-                    responseParameters = jsonDico
+                    for (key,value) in jsonDico {
+                        responseParameters[key] = value
+                    }
                 } else {
                     responseParameters = response.string?.parametersFromQueryString ?? [:]
                 }
