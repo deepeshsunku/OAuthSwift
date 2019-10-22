@@ -12,6 +12,5 @@ Pod::Spec.new do |s|
   s.source = { git: 'https://github.com/OAuthSwift/OAuthSwift.git', tag: s.version }
   s.source_files = 'Sources/*.swift'
   s.swift_versions = ['5.0', '5.1]
-  s.ios.deployment_target = '9.0'
   s.requires_arc = false
 end
