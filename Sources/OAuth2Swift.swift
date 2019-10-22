@@ -174,11 +174,13 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     open func postOAuthAccessTokenWithRequestToken(responseParameters: OAuthSwift.Parameters, byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        var parameters = responseParameters
+        var parameters = OAuthSwift.Parameters()
+        if let realmId = responseParameters["realmId"] {
+            parameters["realmId"] = realmId
+        }
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
-        parameters["realmIdTest"] = "realmId"
         parameters["grant_type"] = "authorization_code"
 
         // PKCE - extra parameter
